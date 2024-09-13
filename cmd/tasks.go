@@ -15,6 +15,7 @@ const (
 	INSERT_QUERY            string = "INSERT INTO tasks (task) VALUE (?)"
 	SELECT_INCOMPLETE_QUERY string = "SELECT id, task, created FROM tasks WHERE done = false"
 	SELECT_ALL_QUERY        string = "SELECT * FROM tasks"
+	MARK_COMLETE_QUERY      string = "UPDATE tasks SET done = true WHERE id = ?"
 )
 
 func getWriter() *tabwriter.Writer {
@@ -105,4 +106,29 @@ func Add(task string) error {
 	defer w.Flush()
 
 	return printTasks(w, false)
+}
+
+func Complete(id int) error {
+	db, err := sql.Open("sqlite3", file)
+	if err != nil {
+		return fmt.Errorf("Error opening db: %w\n", err)
+	}
+	defer db.Close()
+
+	result, err := db.Exec(MARK_COMLETE_QUERY, id)
+	if err != nil {
+		return fmt.Errorf("Error updating row: %w\n", err)
+	}
+
+	affectedRows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("Error getting affected rows: %w\n", err)
+	}
+
+	if affectedRows == 0 {
+		return fmt.Errorf("No task found with id %d\n", id)
+	}
+
+	fmt.Printf("Marked task %d as completed.", id)
+	return nil
 }
