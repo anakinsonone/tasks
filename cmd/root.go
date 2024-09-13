@@ -18,7 +18,7 @@ var rootCmd = &cobra.Command{
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Oops. An error occurred while executing Tasks.\n %s", err)
+		fmt.Fprintf(os.Stderr, "Oops. An error occurred while executing Tasks.\n%s\n", err)
 		os.Exit(1)
 	}
 }
