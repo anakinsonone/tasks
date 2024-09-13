@@ -8,6 +8,7 @@ import (
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/mergestat/timediff"
 )
 
 const (
@@ -63,7 +64,7 @@ func printTasks(w *tabwriter.Writer, showCompletion bool) error {
 			return fmt.Errorf("Error scanning row: %w\n", err)
 		}
 
-		age := time.Since(created).Round(time.Minute)
+		age := timediff.TimeDiff(created)
 
 		if showCompletion {
 			completed := "No"
