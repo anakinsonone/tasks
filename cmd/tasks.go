@@ -157,7 +157,7 @@ func Complete(id int) error {
 		return fmt.Errorf("No task found with id %d\n", id)
 	}
 
-	fmt.Printf("Marked task %d as completed.", id)
+	fmt.Printf("Marked task %d as completed\n", id)
 	return nil
 }
 
