@@ -132,3 +132,28 @@ func Complete(id int) error {
 	fmt.Printf("Marked task %d as completed.", id)
 	return nil
 }
+
+func Delete(id int) error {
+	db, err := sql.Open("sqlite3", file)
+	if err != nil {
+		return fmt.Errorf("Error opening db: %w\n", err)
+	}
+	defer db.Close()
+
+	result, err := db.Exec("DELETE FROM tasks WHERE id = ?", id)
+	if err != nil {
+		return fmt.Errorf("Error deleting from db: %w\n", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("Error getting affected rows: %w\n", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("No task found with id %d\n", id)
+	}
+
+	fmt.Printf("Deleted task %d\n", id)
+	return nil
+}
