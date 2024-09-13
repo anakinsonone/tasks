@@ -84,7 +84,29 @@ func printTasks(w *tabwriter.Writer, showCompletion bool) error {
 	return nil
 }
 
+func createTable() error {
+	db, err := sql.Open("sqlite3", "tasks.db")
+	if err != nil {
+		return fmt.Errorf("Error opening db: %w\n", err)
+	}
+	defer db.Close()
+
+	_, err = db.Exec(
+		"CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, task TEXT NOT NULL, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, done BOOLEAN DEFAULT 0)",
+	)
+	if err != nil {
+		return fmt.Errorf("Error creating db: %w\n", err)
+	}
+
+	return nil
+}
+
 func List(showCompletion bool) error {
+	err := createTable()
+	if err != nil {
+		return err
+	}
+
 	w := getWriter()
 	defer w.Flush()
 
@@ -92,6 +114,11 @@ func List(showCompletion bool) error {
 }
 
 func Add(task string) error {
+	err := createTable()
+	if err != nil {
+		return err
+	}
+
 	db, err := sql.Open("sqlite3", file)
 	if err != nil {
 		return fmt.Errorf("Error opening database: %w\n", err)
