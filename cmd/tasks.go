@@ -88,3 +88,21 @@ func List(showCompletion bool) error {
 
 	return printTasks(w, showCompletion)
 }
+
+func Add(task string) error {
+	db, err := sql.Open("sqlite3", file)
+	if err != nil {
+		return fmt.Errorf("Error opening database: %w\n", err)
+	}
+	defer db.Close()
+
+	_, err = db.Exec(INSERT_QUERY, task)
+	if err != nil {
+		return fmt.Errorf("Error inserting todo: %w\n", err)
+	}
+
+	w := getWriter()
+	defer w.Flush()
+
+	return printTasks(w, false)
+}
