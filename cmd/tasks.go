@@ -13,6 +13,7 @@ import (
 
 const (
 	file                    string = "tasks.db"
+	CREATE_TABLE_QUERY      string = "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, task TEXT NOT NULL, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, done BOOLEAN DEFAULT 0)"
 	INSERT_QUERY            string = "INSERT INTO tasks (task) VALUES (?)"
 	SELECT_INCOMPLETE_QUERY string = "SELECT id, task, created FROM tasks WHERE done = false"
 	SELECT_ALL_QUERY        string = "SELECT * FROM tasks"
@@ -91,9 +92,7 @@ func createTable() error {
 	}
 	defer db.Close()
 
-	_, err = db.Exec(
-		"CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, task TEXT NOT NULL, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, done BOOLEAN DEFAULT 0)",
-	)
+	_, err = db.Exec(CREATE_TABLE_QUERY)
 	if err != nil {
 		return fmt.Errorf("Error creating db: %w\n", err)
 	}
