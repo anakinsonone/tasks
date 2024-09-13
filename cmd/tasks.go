@@ -13,7 +13,7 @@ import (
 
 const (
 	file                    string = "tasks.db"
-	INSERT_QUERY            string = "INSERT INTO tasks (task) VALUE (?)"
+	INSERT_QUERY            string = "INSERT INTO tasks (task) VALUES (?)"
 	SELECT_INCOMPLETE_QUERY string = "SELECT id, task, created FROM tasks WHERE done = false"
 	SELECT_ALL_QUERY        string = "SELECT * FROM tasks"
 	MARK_COMLETE_QUERY      string = "UPDATE tasks SET done = true WHERE id = ?"
