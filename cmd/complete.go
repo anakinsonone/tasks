@@ -8,9 +8,10 @@ import (
 )
 
 var completeCmd = &cobra.Command{
-	Use:   "complete",
-	Args:  cobra.ExactArgs(1),
-	Short: "Mark task as complete.",
+	Use:     "complete",
+	Aliases: []string{"c"},
+	Args:    cobra.ExactArgs(1),
+	Short:   "Mark task as complete.",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		id, err := strconv.Atoi(args[0])
 		if err != nil {
