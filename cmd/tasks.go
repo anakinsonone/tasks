@@ -14,6 +14,7 @@ import (
 const (
 	file                    string = "tasks.db"
 	CREATE_TABLE_QUERY      string = "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, task TEXT NOT NULL, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, done BOOLEAN DEFAULT 0)"
+	DELETE_QUERY            string = "DELETE FROM tasks WHERE id = ?"
 	INSERT_QUERY            string = "INSERT INTO tasks (task) VALUES (?)"
 	SELECT_INCOMPLETE_QUERY string = "SELECT id, task, created FROM tasks WHERE done = false"
 	SELECT_ALL_QUERY        string = "SELECT * FROM tasks"
@@ -167,7 +168,7 @@ func Delete(id int) error {
 	}
 	defer db.Close()
 
-	result, err := db.Exec("DELETE FROM tasks WHERE id = ?", id)
+	result, err := db.Exec(DELETE_QUERY, id)
 	if err != nil {
 		return fmt.Errorf("Error deleting from db: %w\n", err)
 	}
