@@ -17,7 +17,7 @@ const (
 	INSERT_QUERY            string = "INSERT INTO tasks (task) VALUES (?)"
 	SELECT_INCOMPLETE_QUERY string = "SELECT id, task, created FROM tasks WHERE done = false"
 	SELECT_ALL_QUERY        string = "SELECT * FROM tasks"
-	MARK_COMLETE_QUERY      string = "UPDATE tasks SET done = true WHERE id = ?"
+	MARK_COMPLETE_QUERY     string = "UPDATE tasks SET done = true WHERE id = ?"
 )
 
 func getWriter() *tabwriter.Writer {
@@ -142,7 +142,7 @@ func Complete(id int) error {
 	}
 	defer db.Close()
 
-	result, err := db.Exec(MARK_COMLETE_QUERY, id)
+	result, err := db.Exec(MARK_COMPLETE_QUERY, id)
 	if err != nil {
 		return fmt.Errorf("Error updating row: %w\n", err)
 	}
