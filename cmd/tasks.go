@@ -13,10 +13,10 @@ import (
 
 const (
 	file                    string = "tasks.db"
-	CREATE_TABLE_QUERY      string = "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, task TEXT NOT NULL, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, done BOOLEAN DEFAULT 0)"
+	CREATE_TABLE_QUERY      string = "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, task TEXT NOT NULL, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, done BOOLEAN DEFAULT 0, due TIMESTAMP)"
 	DELETE_QUERY            string = "DELETE FROM tasks WHERE id = ?"
-	INSERT_QUERY            string = "INSERT INTO tasks (task) VALUES (?)"
-	SELECT_INCOMPLETE_QUERY string = "SELECT id, task, created FROM tasks WHERE done = false"
+	INSERT_QUERY            string = "INSERT INTO tasks (task, due) VALUES (?, ?)"
+	SELECT_INCOMPLETE_QUERY string = "SELECT id, task, created, due FROM tasks WHERE done = false"
 	SELECT_ALL_QUERY        string = "SELECT * FROM tasks"
 	MARK_COMPLETE_QUERY     string = "UPDATE tasks SET done = true WHERE id = ?"
 )
@@ -44,9 +44,9 @@ func printTasks(w *tabwriter.Writer, showCompletion bool) error {
 	defer rows.Close()
 
 	if showCompletion {
-		fmt.Fprintf(w, "ID\tTask\tCreated\tDone\n")
+		fmt.Fprintf(w, "ID\tTask\tCreated\tDone\tDue\n")
 	} else {
-		fmt.Fprintf(w, "ID\tTask\tCreated\n")
+		fmt.Fprintf(w, "ID\tTask\tCreated\tDue\n")
 	}
 
 	for rows.Next() {
@@ -55,27 +55,34 @@ func printTasks(w *tabwriter.Writer, showCompletion bool) error {
 			task    string
 			created time.Time
 			done    sql.NullBool
+			due     *time.Time
 		)
 
 		if showCompletion {
-			err = rows.Scan(&id, &task, &created, &done)
+			err = rows.Scan(&id, &task, &created, &done, &due)
 		} else {
-			err = rows.Scan(&id, &task, &created)
+			err = rows.Scan(&id, &task, &created, &due)
 		}
 		if err != nil {
 			return fmt.Errorf("Error scanning row: %w\n", err)
 		}
 
 		age := timediff.TimeDiff(created)
+		var timeLeft string
+		if due != nil {
+			timeLeft = timediff.TimeDiff(*due)
+		} else {
+			timeLeft = "nil"
+		}
 
 		if showCompletion {
 			completed := "No"
 			if done.Valid && done.Bool {
 				completed = "Yes"
 			}
-			fmt.Fprintf(w, "%d\t%s\t%v\t%s\n", id, task, age, completed)
+			fmt.Fprintf(w, "%d\t%s\t%v\t%s\t%s\n", id, task, age, completed, timeLeft)
 		} else {
-			fmt.Fprintf(w, "%d\t%s\t%v\n", id, task, age)
+			fmt.Fprintf(w, "%d\t%s\t%v\t%s\n", id, task, age, timeLeft)
 		}
 	}
 
@@ -113,7 +120,7 @@ func List(showCompletion bool) error {
 	return printTasks(w, showCompletion)
 }
 
-func Add(task string) error {
+func Add(task string, due *time.Time) error {
 	err := createTable()
 	if err != nil {
 		return err
@@ -125,7 +132,12 @@ func Add(task string) error {
 	}
 	defer db.Close()
 
-	_, err = db.Exec(INSERT_QUERY, task)
+	if due == nil {
+		_, err = db.Exec(INSERT_QUERY, task, nil)
+	} else {
+		_, err = db.Exec(INSERT_QUERY, task, due)
+	}
+
 	if err != nil {
 		return fmt.Errorf("Error inserting todo: %w\n", err)
 	}
