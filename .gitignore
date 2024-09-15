@@ -1,2 +1,8 @@
 # editor related
 *.vim
+
+# database
+*.db
+
+# binaries
+tasks
