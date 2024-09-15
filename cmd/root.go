@@ -10,7 +10,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "tasks",
 	Short: "Tasks is a CLI todo app.",
-	Long:  "Tasks is a full-featured command line todo app wherein you can add tasks, mark them as completed/in progress/yet to start. You can also set a deadline for each task.",
+	Long:  "Tasks is a full-featured command line todo app wherein you can add tasks and track them. You can even mark them as completed and set a deadline for each task.",
 	Run: func(cmd *cobra.Command, args []string) {
 	},
 }
