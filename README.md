@@ -1,60 +1,85 @@
-# Tasks
+# Tasks - CLI Task Manager
 
-## A cli app for managing tasks in the terminal.
+## Overview
 
-## Available Commands
+Tasks is a command-line interface(CLI) application for managing your to-do list directly from the terminal. Built with Go, it provides a simple and efficient way to add, list, complete and delete tasks, all while storing your data locally using SQLite.
 
-### 1. Add
+## Features
 
-Add a new task to the database.
+- Add tasks with optional deadlines.
+- List all tasks or only incomplete ones.
+- Mark tasks as complete.
+- Delete tasks.
+- Data persistence using SQLite database.
 
-```bash
-$ tasks add <task description>
-# optional flags
-# add deadline in minutes
-$ tasks add <task description> -m/--minutes <number>
-# add deadline in hours
-$ tasks add <task description> -r/--hours <number>
-# add deadline in days
-$ tasks add <task description> -d/--days <number>
-```
+## Installation
 
-### 2. List
+### Prerequisites
 
-Fetch all incomplete tasks from the database.
+- Go 1.16 or higher.
+- SQLite.
 
-```bash
-$ tasks list
-# or
-$ tasks ls
-# optional flag to fetch all tasks(complete ones as well).
-$ tasks list -a
-```
+### Steps
 
-### 3. Complete
-
-Mark a task as `completed`.
+1. Clone the repository.
 
 ```bash
-$ tasks complete <task_id>
-# or
-$ tasks c <task_id>
+$ git clone https://github.com/anakinsonone/tasks.git
 ```
 
-### 4. Delete
-
-Delete a particular task from the database.
+2. Navigate to project directory.
 
 ```bash
-$ tasks delete <task_id>
-# or
-$ tasks d <task_id>
+$ cd tasks
 ```
 
-## Notable packages used
+3. Build the application.
 
-- `strconv` - for turning types into strings and vice versa.
-- `text/tabwriter` - for writing out tab aligned output.
-- `github.com/spf13/cobra` - for the command line interface.
-- `github.com/mattn/go-sqlite3` - for providing sqlite drivers.
-- `github.com/mergestat/timediff` - for displaying relative, friendly time differences.
+```bash
+$ go build
+```
+
+4. Move the binary to a directory in your PATH(e.g.,/usr/local/bin)
+
+```bash
+$ sudo mv tasks /usr/local/bin
+```
+
+## Usage
+
+### Add a task
+
+```bash
+$ tasks add "Complete project proposal"
+$ tasks add "Call client" -m 30 # Due in 30 minutes
+$ tasks add "Submit report" -r 2 # Due in 2 hours
+$ tasks add "Team meeting" -d 1 # Due in 1 day
+```
+
+### List tasks
+
+```bash
+$ tasks list  # List incomplete tasks
+$ tasks ls    # Shorthand for list
+$ tasks list -a  # List all tasks, including completed ones
+```
+
+### Complete a task
+
+```bash
+$ tasks complete 1  # Mark task with ID 1 as completed
+$ tasks c 1         # Shorthand for complete
+```
+
+### Delete a task
+
+```bash
+$ tasks delete 1  # Delete task with ID 1
+$ tasks d 1       # Shorthand for delete
+```
+
+## Dependencies
+
+- github.com/spf13/cobra - For building the CLI interface
+- github.com/mattn/go-sqlite3 - SQLite driver for Go
+- github.com/mergestat/timediff - For human-readable time differences
