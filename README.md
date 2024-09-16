@@ -4,8 +4,9 @@
 
 ## Available Commands
 
-1. Add
-   Add a new task to the database.
+### 1. Add
+
+Add a new task to the database.
 
 ```bash
 $ tasks add <task description>
@@ -18,8 +19,9 @@ $ tasks add <task description> -r/--hours <number>
 $ tasks add <task description> -d/--days <number>
 ```
 
-2. List
-   Fetch all incomplete tasks from the database.
+### 2. List
+
+Fetch all incomplete tasks from the database.
 
 ```bash
 $ tasks list
@@ -29,8 +31,9 @@ $ tasks ls
 $ tasks list -a
 ```
 
-3. Complete
-   Mark a task as `completed`.
+### 3. Complete
+
+Mark a task as `completed`.
 
 ```bash
 $ tasks complete <task_id>
@@ -38,8 +41,9 @@ $ tasks complete <task_id>
 $ tasks c <task_id>
 ```
 
-4. Delete
-   Delete a particular task from the database.
+### 4. Delete
+
+Delete a particular task from the database.
 
 ```bash
 $ tasks delete <task_id>
