@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	file                    string = "tasks.db"
+	file                    string = ".tasks.db"
 	CREATE_TABLE_QUERY      string = "CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, task TEXT NOT NULL, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, done BOOLEAN DEFAULT 0, due TIMESTAMP)"
 	DELETE_QUERY            string = "DELETE FROM tasks WHERE id = ?"
 	INSERT_QUERY            string = "INSERT INTO tasks (task, due) VALUES (?, ?)"
@@ -94,7 +94,7 @@ func printTasks(w *tabwriter.Writer, showCompletion bool) error {
 }
 
 func createTable() error {
-	db, err := sql.Open("sqlite3", "tasks.db")
+	db, err := sql.Open("sqlite3", ".tasks.db")
 	if err != nil {
 		return fmt.Errorf("Error opening db: %w\n", err)
 	}
